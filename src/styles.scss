@@ -1,0 +1,141 @@
+@import url("https://fonts.googleapis.com/css?family=Mina:700");
+@import "bootstrap";
+
+$customFont: "mina";
+
+$url1: url("../src/assets/snake_background_1.jpg");
+$url2: url("../src/assets/snake_background_2.jpg");
+$url3: url("../src/assets/snake_background_3.jpg");
+
+body {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  font-family: $customFont;
+  font-size: larger;
+
+  &.snake_background_1 {
+    background-image: $url1;
+  }
+  &.snake_background_2 {
+    background-image: $url2;
+  }
+  &.snake_background_3 {
+    background-image: $url3;
+  }
+}
+
+.my-text {
+  -webkit-text-stroke: 1.3px rgb(35, 148, 56);
+  font-size: 1.6rem;
+  color: black;
+  padding: 0px 0px 0px 0px;
+}
+.status-button {
+  border-style: outset;
+  border-width: 10px;
+  border-color: rgb(122, 85, 85);
+  background: transparent;
+  font-size: 25px;
+  font-weight: 900;
+  text-transform: uppercase;
+  box-shadow: 0px 0px 5px 5px rgb(53, 222, 84);
+}
+
+.form-label {
+  padding-bottom: 1px;
+  padding-right: 5px;
+  padding-left: 10px;
+  padding-top: 4px;
+}
+
+ngx-snake {
+  &.black-and-white {
+    ngx-snake-tile {
+      &.free {
+        div {
+          background: #ffffff;
+        }
+      }
+
+      &.head,
+      &.tail,
+      &.food,
+      &.body {
+        div {
+          background: #000000;
+        }
+      }
+    }
+  }
+  &.standard {
+    ngx-snake-tile {
+      &.free {
+        div {
+          background: #f5fdf6a6;
+        }
+      }
+      &.head,
+      &.tail,
+      &.body {
+        div {
+          background: #1bec00;
+        }
+      }
+      &.food {
+        background: #e5da0b;
+      }
+    }
+  }
+  &.animated {
+    ngx-snake-tile {
+      border: transparent;
+      background: transparent;
+      width: 30px;
+      height: 30px;
+      &.free {
+        div {
+          background-image: url("../src/assets/grass3_30x26.png");
+          background-size: cover;
+          background-position: center;
+          background-color: transparent;
+        }
+      }
+      &.head {
+        div {
+          background-image: url("../src/assets/snake_head.png");
+          background-size: cover;
+          background-position: center;
+          background-color: transparent;
+        }
+      }
+      &.tail {
+        div {
+          background-color: rgb(106, 32, 32);
+          height: 60%;
+          width: 60%;
+          margin-left: 25%;
+          margin-top: 25%;
+        }
+      }
+      &.body {
+        div {
+          background-color: #65b45b;
+          height: 60%;
+          width: 60%;
+          margin-left: 25%;
+          margin-top: 25%;
+        }
+      }
+      &.food {
+        div {
+          background-image: url("../src/assets/bug.png");
+          background-size: cover;
+          background-position: center;
+          background-color: transparent;
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+<header>
+    <h1 class="fs-1 my-text">HELLO {{currentPlayer.name}} !</h1></header>
+
+<div class="container-xxl">
+
+    <div class="row">
+        <div class="col-4">
+            <app-snake-events></app-snake-events>
+        </div>
+        <div class="col-4">
+            <div class="game">
+                <h2 class="text-center my-text fs-2">POINTS:
+                    {{pointsCounter}}</h2>
+
+                <ngx-snake [ngClass]="gameTheme" (foodEaten)="onFoodEaten()"
+                    (gameOver)="onDead()"></ngx-snake>
+                <br>
+                <app-game-theme
+                    [(currentTheme)]="gameTheme"
+                    (currentThemeChange)="handleThemeChange()"></app-game-theme>
+            </div>
+        </div>
+        <div class="col-4">
+
+            <app-snake-game-actions
+                [gameStatus]="currentGameStatus"
+                [timer]="timer"
+                (start)="onActionStartPressed()"
+                (stop)="onActionStopPressed()"
+                (reset)="onActionStopResetPressed()"
+                (up)="onActionUpPressed()"
+                (down)="onActionDownPressed()"
+                (right)="onActionRightPressed()"
+                (left)="onActionLeftPressed()"
+                (quit)="renderFormPage()"></app-snake-game-actions>
+
+        </div>
+
+    </div>
+    <app-end-game-alert *ngIf="isAlertVisible" [score]="pointsCounter"
+        [playerScores]="playerHighScores"
+        (closeAlertEvent)="hideAlert()"></app-end-game-alert>
+</div>

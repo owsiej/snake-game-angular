@@ -1,0 +1,20 @@
+@import "bootstrap";
+
+.container {
+    // position: absolute;
+    margin-left: 50px;
+    margin-right: 50px;
+    padding-top: 150px;
+
+    // transform: translate(-50%, -50%);
+}
+
+h1,
+h4 {
+    text-shadow: #42a948 10px 7px 5px;
+}
+
+.wrapper {
+    display: flex; /* or display: grid; */
+    justify-content: right;
+}

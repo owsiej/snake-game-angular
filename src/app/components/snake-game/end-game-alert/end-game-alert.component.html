@@ -1,0 +1,15 @@
+
+<div class="overlay">
+    <div class="custom-modal text-center pt-2">
+        <p class="my-text">GAME OVER:</p>
+        <p class="my-text">Your score: {{score}}</p>
+        <button class="status-button text-center fs-4 my-text"
+            (click)="onHideAlert()">CONTINUE</button>
+        <p class="my-text">YOUR HIGHSCORES</p>
+        <ul>
+            <li
+                *ngFor="let score of playerScores | slice:0:5">{{score.name}},
+                {{score.score}}</li>
+        </ul>
+    </div>
+</div>

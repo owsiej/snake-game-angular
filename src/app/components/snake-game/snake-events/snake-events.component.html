@@ -1,0 +1,46 @@
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <label class="my-text" for="actions">Action filter</label>
+            <select [(ngModel)]="selectedAction" name="actions" id="actions"
+                (change)="updateDisplayedEvents()"
+                class="form-select">
+                <option selected value="All actions">All Actions</option>
+                <option *ngFor="let action of availableActions()"
+                    [value]="action">{{action}}</option>
+            </select>
+        </div>
+        <div class="col justify-content-center"> <p class="my-text">Sort
+                order:</p>
+            <button class="triangle-button"
+                (click)="sortEventsAsc()"></button>
+            <button class="triangle-button rotate-180"
+                (click)="sortEventsDesc()"></button>
+
+        </div>
+        <div class="row">
+            <div class="col limit-table">
+                <table class="table table-sm">
+                    <caption class="caption-top my-text">Action List</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Action</th>
+                            <th scope="col">Timestamp</th>
+                            <th scope="col">Current Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            *ngFor="let event of displayedEvents; let i = index">
+                            <th scope="row">{{i+1}}</th>
+                            <td>{{event.action}}</td>
+                            <td>{{event.timestamp | timerFormatter}}</td>
+                            <td>{{event.currentScore}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>

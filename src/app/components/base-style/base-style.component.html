@@ -1,0 +1,9 @@
+<p class="form-label my-text fs-5">{{title}}</p>
+
+@for (option of themeOptions; track option) {
+
+<label class="form-label" [for]="option.value">{{option.title}}</label>
+<input [(ngModel)]="currentTheme" type="radio" [name]="title"
+    [id]="option.value" [value]="option.value"
+    (change)="updateCurrentThemeChange()">
+}

@@ -1,0 +1,25 @@
+.limit-table {
+    height: 300px;
+    overflow-y: auto;
+    float: left;
+}
+
+tr {
+    font-size: small;
+}
+.triangle-button {
+    background-color: transparent;
+    border-top: 0px solid transparent;
+    border-left: 20px solid transparent;
+    border-right: 20px solid transparent;
+    border-bottom: 25px solid rgb(122, 85, 85);
+    width: 30px;
+    padding: 0;
+    margin-right: 0.5rem;
+    margin-left: 1rem;
+    float: inline-start;
+}
+
+.rotate-180 {
+    transform: rotate(180deg);
+}

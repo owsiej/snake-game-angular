@@ -1,0 +1,54 @@
+<div class="menu">
+    <p class="my-text fs-5">TIMER: {{timer | timerFormatter}}</p>
+
+    <h3 class="my-text fs-3">GAME STATUS: {{gameStatus}}</h3>
+    <div class="text-center me-5"
+        [ngSwitch]="gameStatus">
+        <div *ngSwitchCase="allGameAction.PENDING">
+            <button class="status-button my-text"
+                (click)="onStart()">Start Game</button>
+        </div>
+        <div *ngSwitchCase="allGameAction.PLAY">
+            <button class="status-button me-4"
+                (click)="onStop()">Pause</button>
+            <button class="status-button ms-4"
+                (click)="onReset()">Reset</button>
+        </div>
+        <div *ngSwitchCase="allGameAction.PAUSE">
+            <button class="status-button me-3"
+                (click)="onStart()">Resume</button>
+            <button class="status-button ms-3"
+                (click)="onReset()">Reset</button>
+        </div>
+        <div *ngSwitchCase="allGameAction.DEAD">
+            <button class="status-button me-1"
+                (click)="onReset()">Try
+                again</button>
+        </div>
+    </div>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col text-center">
+                <button class="play-button button-up me-5"
+                    (click)="onUp()"></button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-start ps-5"><button
+                    class="play-button button-left"
+                    (click)="onLeft()"></button></div>
+            <div class="col text-end pe-5"><button
+                    class="play-button me-5"
+                    (click)="onRight()"></button></div>
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                <button
+                    class="play-button button-down me-5"
+                    (click)="onDown()"></button></div>
+        </div>
+    </div>
+    <button class="status-button my-text"
+        type="button"
+        (click)="onQuit()">QUIT</button>
+</div>

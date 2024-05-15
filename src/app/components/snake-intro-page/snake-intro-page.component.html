@@ -1,0 +1,19 @@
+<div class="wrapper">
+    <div class="container w-25">
+        <h1 style="width: 130%;">Welcome to the Snake Game !</h1>
+        <app-snake-form (submitEvent)="onSubmitAction($event)"
+            [testPlayer]="testPlayer"></app-snake-form>
+        <app-background-image
+            [(currentTheme)]="currentBackgroundImage"
+            (currentThemeChange)="handleBackgroundImageChange()"></app-background-image>
+    </div>
+    <div class="container w-25">
+        <app-game-highscores
+            [highscores]="globalHighscores"></app-game-highscores>
+
+        <label for="interval" class="my-text fs-6">{{checkboxState ?
+            "Enable auto-refresh":
+            "Disable auto-refresh"}}</label>
+        <input [(ngModel)]="checkboxState" type="checkbox" id="inverval" />
+    </div>
+</div>

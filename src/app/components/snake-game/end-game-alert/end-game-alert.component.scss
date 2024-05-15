@@ -1,0 +1,22 @@
+.overlay {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.custom-modal {
+    position: relative;
+    margin-top: -400px;
+    background-image: url("../../../../assets/alert.jpg");
+    background-size: cover;
+    background-position: center;
+    padding: 80px 120px 50px 120px;
+    border-radius: 30px;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+}
