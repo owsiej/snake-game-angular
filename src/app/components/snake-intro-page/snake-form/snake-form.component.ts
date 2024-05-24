@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnInit,
   Output,
 } from '@angular/core';
 import { Player } from '../../../models/player';
@@ -21,7 +22,7 @@ import { GameThemeComponent } from '../../base-style/game-theme/game-theme.compo
   templateUrl: './snake-form.component.html',
   styleUrl: './snake-form.component.scss',
 })
-export class SnakeFormComponent implements OnChanges {
+export class SnakeFormComponent implements OnChanges, OnInit {
   @Input() public testPlayer!: Player;
 
   @Output() public submitEvent = new EventEmitter();
@@ -47,9 +48,21 @@ export class SnakeFormComponent implements OnChanges {
       day: [0],
     }),
   });
-  constructor(public fb: FormBuilder, private _highscores: HighscoresService) {
-    this.year.valueChanges.subscribe(() => this.resetDayNumber());
-    this.month.valueChanges.subscribe(() => this.resetDayNumber());
+  public setOfYears: Array<number> = this.generateYears();
+  public setOfMonths: Array<string> = this.generateMonths();
+  public setOfDays: Array<number> = this.generateDays();
+
+  constructor(public fb: FormBuilder, private _highscores: HighscoresService) {}
+  ngOnInit(): void {
+    this.year.valueChanges.subscribe(() => {
+      this.resetDayNumber();
+      this.setOfMonths = this.generateMonths();
+      this.setOfDays = this.generateDays();
+    });
+    this.month.valueChanges.subscribe(() => {
+      this.resetDayNumber();
+      this.setOfDays = this.generateDays();
+    });
   }
   ngOnChanges(): void {
     this.snakeForm.setValue(this.testPlayer);

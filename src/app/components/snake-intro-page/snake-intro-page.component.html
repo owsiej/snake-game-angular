@@ -14,6 +14,7 @@
         <label for="interval" class="my-text fs-6">{{checkboxState ?
             "Enable auto-refresh":
             "Disable auto-refresh"}}</label>
-        <input [(ngModel)]="checkboxState" type="checkbox" id="inverval" />
+        <input [(ngModel)]="checkboxState" (change)="handleCheckBoxState()"
+            type="checkbox" id="inverval" />
     </div>
 </div>

@@ -6,7 +6,13 @@ import { Router } from '@angular/router';
 import { GameHighscoresComponent } from './game-highscores/game-highscores.component';
 import { HighscoresService } from '../../services/highscores.service';
 import { Score } from '../../models/score';
-import { EMPTY, Subscription, interval, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  NEVER,
+  Subscription,
+  interval,
+  switchMap,
+} from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GameThemes } from '../../models/game-themes';
@@ -36,6 +42,8 @@ export class SnakeIntroPageComponent implements OnInit, OnDestroy {
     SnakeBackgroundImage.IMAGE_1;
 
   public bodyTag: HTMLBodyElement = document.getElementsByTagName('body')[0];
+
+  private checkboxStateSubject$ = new BehaviorSubject<boolean>(true);
 
   constructor(
     private _snakeService: SnakeService,
@@ -71,12 +79,21 @@ export class SnakeIntroPageComponent implements OnInit, OnDestroy {
     this._router.navigate(['/game-page', theme]);
   }
 
+  handleCheckBoxState() {
+    this.checkboxStateSubject$.next(!this.checkboxStateSubject$.getValue());
+  }
+
   loadHighscoresOnInterval(): void {
-    this.intervalSubscription = interval(30000)
+    this.intervalSubscription = this.checkboxStateSubject$
       .pipe(
-        switchMap(() =>
-          !this.checkboxState ? this._highscores.loadHighscores() : EMPTY
-        )
+        switchMap((value) => {
+          if (value) {
+            return interval(30000);
+          } else {
+            return NEVER;
+          }
+        }),
+        switchMap(() => this._highscores.loadHighscores())
       )
       .subscribe((scores) => {
         this.globalHighscores = scores;

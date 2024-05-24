@@ -40,17 +40,17 @@
         <div>
             <label class="form-label" for="years">Year</label>
             <select id="years" formControlName="year">
-                <option *ngFor="let year of generateYears()"
+                <option *ngFor="let year of setOfYears"
                     [value]="year">{{year}}</option>
             </select>
             <label class="form-label" for="months">Month</label>
             <select id="months" formControlName="month">
-                <option *ngFor="let month of generateMonths()"
+                <option *ngFor="let month of setOfMonths"
                     [value]="month">{{month}}</option>
             </select>
             <label class="form-label" for="days">Day</label>
             <select id="days" formControlName="day">
-                <option *ngFor="let day of generateDays()"
+                <option *ngFor="let day of setOfDays"
                     [value]="day">{{day}}</option>
             </select>
 
