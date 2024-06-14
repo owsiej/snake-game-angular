@@ -1,50 +1,51 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { Player } from '../models/player';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { PlayerLogin } from '../models/player-login';
+import { PlayerRegister } from '../models/player-register';
+import { GameThemes } from '../models/game-themes';
 
 @Injectable({
   providedIn: 'root',
 })
 export class SnakeService {
-  //Subject to specjalny rodzaj observable, mozemy dodawac do niego nowe wartosci za pomoca .next()
-  // jest multicast, czyli wysyla dana wartości do wszystkich obserwujących
-  private submitState = new BehaviorSubject<boolean>(false); // kontroluje stan zmiennej
-  // Observable - odpowiadają za dostarczanie wiadomosci, obsługując asynchroniczność
-  //              oddaje wartości dopiero w momencie, gdy ktoś nie użyje metody subscribe()
-  currentSubmitState = this.submitState.asObservable(); //wyrzuca stan zmiennej globalnie
+  private submitStateSource$ = new BehaviorSubject<boolean>(false);
+  public currentSubmitState$ = this.submitStateSource$.asObservable();
 
-  private playerSource = new BehaviorSubject<Player>({
-    name: '',
-    token: '',
+  private gameThemeSource$ = new BehaviorSubject<GameThemes>(
+    GameThemes.STANDARD
+  );
+  public currentGameTheme$: Observable<GameThemes> =
+    this.gameThemeSource$.asObservable();
+
+  private defaultPlayerData: PlayerRegister = {
+    username: '',
+    password: '',
     dateOfBirth: {
-      year: 2023,
-      month: 'January',
-      day: 1,
+      year: 0,
+      month: '',
+      day: 0,
     },
-  });
-  currentPlayer = this.playerSource.asObservable();
+  };
 
-  changeSubmit(state: boolean) {
-    this.submitState.next(state);
+  private playerSource$ = new BehaviorSubject<PlayerLogin | PlayerRegister>(
+    this.defaultPlayerData
+  );
+  public currentPlayer$: Observable<PlayerLogin | PlayerRegister> =
+    this.playerSource$.asObservable();
+
+  updateSubmitState(state: boolean): void {
+    this.submitStateSource$.next(state);
   }
 
-  updateCurrentPlayer(player: Player) {
-    this.playerSource.next(player);
+  updateGameTheme(theme: GameThemes): void {
+    this.gameThemeSource$.next(theme);
   }
 
-  setPlayerDataOnDefault() {
-    this.playerSource.next({
-      name: '',
-      token: '',
-      dateOfBirth: {
-        year: 2023,
-        month: 'January',
-        day: 1,
-      },
-    });
+  updateCurrentPlayer(player: PlayerLogin | PlayerRegister): void {
+    this.playerSource$.next(player);
+  }
+
+  setPlayerDataOnDefault(): void {
+    this.playerSource$.next(this.defaultPlayerData);
   }
 }
-// Subject vs BehaviorSubject - Subject nie posiada wartosci wyjsciowej
-//                              wiec zapisuje wartosci dopiero po uzyciu subscribe
-//                            - BehaviorSubject posiada wartość wyjściową,
-//                              więc możemy wyemitować wartości dodane przed subscribe

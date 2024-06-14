@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgxSnakeComponent, NgxSnakeModule } from 'ngx-snake';
 import { SnakeService } from '../../services/snake.service';
-import { Player } from '../../models/player';
+import { PlayerLogin } from '../../models/player-login';
 import { interval, takeWhile } from 'rxjs';
 import { SnakeEventsComponent } from './snake-events/snake-events.component';
 import { SnakeEvent } from '../../models/snake-event';
@@ -35,7 +35,7 @@ export class SnakeGameComponent implements OnInit {
   @ViewChild(SnakeEventsComponent)
   private eventComponent!: SnakeEventsComponent;
 
-  public currentPlayer!: Player;
+  public currentPlayer!: PlayerLogin;
   public pointsCounter: number = 0;
   public playerHighScores!: Score[];
 
@@ -60,19 +60,19 @@ export class SnakeGameComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this._snakeService.currentPlayer.subscribe((player: Player) => {
+    this._snakeService.currentPlayer$.subscribe((player: PlayerLogin) => {
       this.currentPlayer = player;
     });
   }
 
   handleThemeChange(): void {
-    this._router.navigate(['game-page', this.gameTheme]);
+    this._router.navigate(['game', this.gameTheme]);
   }
 
   renderFormPage() {
-    this._snakeService.changeSubmit(false);
+    this._snakeService.updateSubmitState(false);
     this._snakeService.setPlayerDataOnDefault();
-    this._router.navigate(['/intro-page']);
+    this._router.navigate(['/login']);
   }
   changeGameStatus(status: GameAction) {
     this.currentGameStatus = status;
@@ -139,14 +139,14 @@ export class SnakeGameComponent implements OnInit {
     );
     this._highscores
       .postScore(
-        this.currentPlayer.name,
+        this.currentPlayer.username,
         this.pointsCounter,
-        this.currentPlayer.token
+        this.currentPlayer.password
       )
       .subscribe((response) => {
         console.log(response);
         this.playerHighScores = response.filter(
-          (score) => score.name === this.currentPlayer.name
+          (score) => score.name === this.currentPlayer.username
         );
         this.showAlert();
       });

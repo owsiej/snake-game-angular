@@ -1,8 +1,8 @@
 <div class="wrapper">
     <div class="container w-25">
         <h1 style="width: 130%;">Welcome to the Snake Game !</h1>
-        <app-snake-form (submitEvent)="onSubmitAction($event)"
-            [testPlayer]="testPlayer"></app-snake-form>
+
+        <router-outlet></router-outlet>
         <app-background-image
             [(currentTheme)]="currentBackgroundImage"
             (currentThemeChange)="handleBackgroundImageChange()"></app-background-image>

@@ -1,14 +1,14 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { SnakeFormComponent } from './snake-form/snake-form.component';
+import { LoginFormComponent } from './login-form/login-form.component';
 import { SnakeService } from '../../services/snake.service';
-import { Player } from '../../models/player';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { GameHighscoresComponent } from './game-highscores/game-highscores.component';
 import { HighscoresService } from '../../services/highscores.service';
 import { Score } from '../../models/score';
 import {
   BehaviorSubject,
   NEVER,
+  Observable,
   Subscription,
   interval,
   switchMap,
@@ -18,28 +18,31 @@ import { FormsModule } from '@angular/forms';
 import { GameThemes } from '../../models/game-themes';
 import { SnakeBackgroundImage } from '../../models/snake-background-image';
 import { BackgroundImageComponent } from '../base-style/background-image/background-image.component';
+import { PlayerLogin } from '../../models/player-login';
 
 @Component({
   selector: 'app-snake-intro-page',
   standalone: true,
   imports: [
-    SnakeFormComponent,
+    LoginFormComponent,
     GameHighscoresComponent,
     CommonModule,
     FormsModule,
     BackgroundImageComponent,
+    RouterOutlet,
   ],
   templateUrl: './snake-intro-page.component.html',
   styleUrl: './snake-intro-page.component.scss',
 })
 export class SnakeIntroPageComponent implements OnInit, OnDestroy {
-  public testPlayer!: Player;
   public globalHighscores: Score[] = [];
   public intervalSubscription!: Subscription;
-
+  public submitSubscription!: Subscription;
   public checkboxState: boolean = false;
   public currentBackgroundImage: SnakeBackgroundImage =
     SnakeBackgroundImage.IMAGE_1;
+
+  public currentGameTheme!: GameThemes;
 
   public bodyTag: HTMLBodyElement = document.getElementsByTagName('body')[0];
 
@@ -50,20 +53,25 @@ export class SnakeIntroPageComponent implements OnInit, OnDestroy {
     private _router: Router,
     private _highscores: HighscoresService
   ) {
+    this.submitSubscription = this._snakeService.currentSubmitState$.subscribe(
+      (state) => {
+        if (state) {
+          this.onSubmitAction();
+        }
+      }
+    );
     this.handleBackgroundImageChange();
   }
 
   ngOnInit(): void {
-    this._snakeService.currentPlayer.subscribe((player) => {
-      this.testPlayer = player;
-    });
-    this._highscores.loadHighscores().subscribe((scores) => {
-      this.globalHighscores = scores;
-    });
-    this.loadHighscoresOnInterval();
+    // this._highscores.loadHighscores().subscribe((scores) => {
+    //   this.globalHighscores = scores;
+    // });
+    // this.loadHighscoresOnInterval();
   }
   ngOnDestroy(): void {
-    this.intervalSubscription.unsubscribe();
+    // this.intervalSubscription.unsubscribe();
+    this.submitSubscription.unsubscribe();
   }
 
   handleBackgroundImageChange() {
@@ -73,10 +81,12 @@ export class SnakeIntroPageComponent implements OnInit, OnDestroy {
     );
   }
 
-  onSubmitAction(theme: GameThemes): void {
-    this._snakeService.updateCurrentPlayer(this.testPlayer);
-    this._snakeService.changeSubmit(true);
-    this._router.navigate(['/game-page', theme]);
+  onSubmitAction(): void {
+    this._snakeService.currentGameTheme$.subscribe((theme) => {
+      this.currentGameTheme = theme;
+    });
+
+    this._router.navigate(['/game', this.currentGameTheme]);
   }
 
   handleCheckBoxState() {

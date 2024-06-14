@@ -1,40 +1,58 @@
 <form (submit)="onSubmit()" [formGroup]="snakeForm">
     <div class="form-group">
-        <label class="form-label my-text fs-5" for="name">Player
+        <label class="form-label my-text fs-5" for="username">Player
             name</label>
         <input type="text"
             class="form-control"
-            formControlName="name"
-            id="name"
-            placeholder="your name">
-        <div [hidden]="name.valid || name.pristine"
+            formControlName="username"
+            id="username"
+            placeholder="your username">
+        <div [hidden]="username.valid || username.pristine"
             class="alert alert-danger">
-            <p *ngIf="name.errors?.['required']">Player name is
+            <p *ngIf="username.errors?.['required']">Player name is
                 required.</p>
-            <p *ngIf="name.errors?.['pattern']">Player name must have 3-15
+            <p *ngIf="username.errors?.['pattern']">Player name must have 3-15
                 characters without any special symbols/whitespaces.</p>
-
         </div>
     </div>
+
     <div class="form-group">
-        <label class="form-label my-text fs-5" for="token">Player
-            token</label>
-        <input type="token"
+        <label class="form-label my-text fs-5" for="password">Player
+            password</label>
+        <input type="password"
             class="form-control"
-            formControlName="token"
-            id="token"
-            placeholder="your token"
+            formControlName="password"
+            id="password"
+            placeholder="your password"
             autocomplete="off">
-        <div [hidden]="token.valid || token.pristine"
+        <div [hidden]="password.valid || password.pristine"
             class="alert alert-danger">
-            <p *ngIf="token.errors?.['required']">Token is
+            <p *ngIf="password.errors?.['required']">Password is
                 required.</p>
-            <p *ngIf="token.errors?.['tokenValidationFailed']">Invalid
-                token.</p>
-
+            <p *ngIf="password.errors?.['pattern']">Password name must have 8-35
+                characters with one small/big letter, digit and special
+                character.</p>
         </div>
 
     </div>
+
+    <div class="form-group">
+        <label class="form-label my-text fs-5" for="confirmPassword">Confirm
+            password</label>
+        <input type="password"
+            class="form-control"
+            formControlName="confirmPassword"
+            id="confirmPassword"
+            placeholder="confirm password"
+            autocomplete="off">
+        <div [hidden]="confirmPassword.valid || confirmPassword.pristine"
+            class="alert alert-danger">
+            <p *ngIf="confirmPassword.errors?.['differentPasswords']">Passwords
+                don't match.
+                password.</p>
+        </div>
+    </div>
+
     <div class="form-group" formGroupName="dateOfBirth">
         <p class="form-label my-text fs-5">Date of birth</p>
         <div>
@@ -65,4 +83,6 @@
     <button
         class="btn btn-success p-3 mt-2 fs-4"
         [disabled]="!snakeForm.valid">Start Game</button>
+    <a [routerLink]="['/login']" class="my-text ms-4 fs-4">go back to
+        login</a>
 </form>

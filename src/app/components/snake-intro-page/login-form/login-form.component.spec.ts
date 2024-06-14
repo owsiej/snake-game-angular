@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SnakeFormComponent } from './snake-form.component';
+import { LoginFormComponent } from './login-form.component';
 
 describe('SnakeFormComponent', () => {
-  let component: SnakeFormComponent;
-  let fixture: ComponentFixture<SnakeFormComponent>;
+  let component: LoginFormComponent;
+  let fixture: ComponentFixture<LoginFormComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SnakeFormComponent]
-    })
-    .compileComponents();
-    
-    fixture = TestBed.createComponent(SnakeFormComponent);
+      imports: [LoginFormComponent],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(LoginFormComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
