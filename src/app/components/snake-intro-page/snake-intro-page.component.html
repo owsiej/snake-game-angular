@@ -8,8 +8,8 @@
             (currentThemeChange)="handleBackgroundImageChange()"></app-background-image>
     </div>
     <div class="container w-25">
-        <app-game-highscores
-            [highscores]="globalHighscores"></app-game-highscores>
+        <app-scores
+            [scores]="scores" [areScoresLoaded]="areScoresLoaded"></app-scores>
 
         <label for="interval" class="my-text fs-6">{{checkboxState ?
             "Enable auto-refresh":
@@ -17,4 +17,5 @@
         <input [(ngModel)]="checkboxState" (change)="handleCheckBoxState()"
             type="checkbox" id="inverval" />
     </div>
+    <app-alert></app-alert>
 </div>

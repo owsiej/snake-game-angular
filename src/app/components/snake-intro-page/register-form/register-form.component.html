@@ -13,6 +13,8 @@
                 required.</p>
             <p *ngIf="username.errors?.['pattern']">Player name must have 3-15
                 characters without any special symbols/whitespaces.</p>
+            <p *ngIf="username.errors?.['ifUsernameExists']">Player username
+                already exists.</p>
         </div>
     </div>
 

@@ -4,6 +4,7 @@ import { Score } from '../models/score';
 @Pipe({
   name: 'sort',
   standalone: true,
+  pure: true,
 })
 export class SortPipe implements PipeTransform {
   transform(value: Score[], order: 'asc' | 'desc'): Score[] {

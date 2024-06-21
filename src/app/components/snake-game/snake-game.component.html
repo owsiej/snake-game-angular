@@ -1,5 +1,5 @@
 <header>
-    <h1 class="fs-1 my-text">HELLO {{currentPlayer.username}} !</h1></header>
+    <h1 class="fs-1 my-text">HELLO {{currentPlayerName}} !</h1></header>
 
 <div class="container-xxl">
 
@@ -32,12 +32,19 @@
                 (down)="onActionDownPressed()"
                 (right)="onActionRightPressed()"
                 (left)="onActionLeftPressed()"
-                (quit)="renderFormPage()"></app-snake-game-actions>
+                (quit)="logout()"></app-snake-game-actions>
 
         </div>
 
     </div>
-    <app-end-game-alert *ngIf="isAlertVisible" [score]="pointsCounter"
-        [playerScores]="playerHighScores"
-        (closeAlertEvent)="hideAlert()"></app-end-game-alert>
+    <app-alert>
+        <p class="my-text">YOUR HIGHSCORES:</p>
+        <ul>
+            <li class="my-text text-start"
+                *ngFor="let score of playerScores | sort:'desc' | slice:0:5">{{score.username}}
+                -
+                {{score.score}} points</li>
+        </ul>
+    </app-alert>
+
 </div>

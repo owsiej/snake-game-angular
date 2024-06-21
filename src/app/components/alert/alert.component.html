@@ -1,0 +1,16 @@
+
+<div *ngIf="isAlertVisible" class="overlay">
+    @if (alert.type==="window") {
+    <div class="custom-modal text-center pt-2">
+        <p class="my-text">{{alert.message}}</p>
+        <p class="my-text">{{alert.error}}</p>
+        <ng-content></ng-content>
+        <button class="status-button text-center fs-4 my-text"
+            (click)="hideAlert()">CLOSE</button>
+    </div>
+
+    }
+    @else if(alert.type==="text") {
+    <p class="my-text">{{alert.message}}</p>
+    }
+</div>

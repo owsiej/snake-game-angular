@@ -1,4 +1,4 @@
-import { GameAction } from './game-action';
+import { GameAction } from '../const/game-action';
 
 export class SnakeEvent {
   constructor(

@@ -1,6 +1,12 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  HostListener,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { GameAction } from '../../../models/game-action';
+import { GameAction } from '../../../const/game-action';
 import { CommonModule } from '@angular/common';
 import { TimerFormatterPipe } from '../../../pipes/timer-formatter.pipe';
 
@@ -37,15 +43,21 @@ export class SnakeGameActionsComponent {
   onReset() {
     this.reset.emit();
   }
+
+  @HostListener('window:keydown.arrowup')
   onUp() {
     this.up.emit();
   }
+  @HostListener('window:keydown.arrowright')
   onRight() {
     this.right.emit();
   }
+  @HostListener('window:keydown.arrowleft')
   onLeft() {
     this.left.emit();
   }
+
+  @HostListener('window:keydown.arrowdown')
   onDown() {
     this.down.emit();
   }

@@ -1,19 +1,21 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NgxSnakeComponent, NgxSnakeModule } from 'ngx-snake';
-import { SnakeService } from '../../services/snake.service';
-import { PlayerLogin } from '../../models/player-login';
-import { interval, takeWhile } from 'rxjs';
+import { catchError, interval, of, switchMap, takeWhile } from 'rxjs';
 import { SnakeEventsComponent } from './snake-events/snake-events.component';
 import { SnakeEvent } from '../../models/snake-event';
-import { GameAction } from '../../models/game-action';
+import { GameAction } from '../../const/game-action';
 import { SnakeGameActionsComponent } from './snake-game-actions/snake-game-actions.component';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HighscoresService } from '../../services/highscores.service';
-import { EndGameAlertComponent } from './end-game-alert/end-game-alert.component';
+import { ScoresClientService } from '../../services/scores/scores-client.service';
 import { Score } from '../../models/score';
-import { GameThemes } from '../../models/game-themes';
+import { GameThemes } from '../../const/game-themes';
 import { GameThemeComponent } from '../base-style/game-theme/game-theme.component';
+import { AuthenticationService } from '../../services/auth/authentication.service';
+import { LocalStorageService } from '../../services/local-storage.service';
+import { AlertComponent } from '../alert/alert.component';
+import { AlertService } from '../../services/alert.service';
+import { SortPipe } from '../../pipes/sort.pipe';
 
 @Component({
   selector: 'app-snake-game',
@@ -23,21 +25,23 @@ import { GameThemeComponent } from '../base-style/game-theme/game-theme.componen
     NgxSnakeModule,
     SnakeEventsComponent,
     SnakeGameActionsComponent,
-    EndGameAlertComponent,
+    AlertComponent,
     GameThemeComponent,
+    SortPipe,
   ],
   templateUrl: './snake-game.component.html',
   styleUrl: './snake-game.component.scss',
 })
-export class SnakeGameComponent implements OnInit {
+export class SnakeGameComponent {
   @ViewChild(NgxSnakeComponent)
   private _snake!: NgxSnakeComponent;
   @ViewChild(SnakeEventsComponent)
   private eventComponent!: SnakeEventsComponent;
 
-  public currentPlayer!: PlayerLogin;
+  public currentPlayerName: string | undefined =
+    this._localStorageService.username;
   public pointsCounter: number = 0;
-  public playerHighScores!: Score[];
+  public playerScores: Score[] = [];
 
   public currentGameStatus: GameAction = GameAction.PENDING;
 
@@ -49,30 +53,29 @@ export class SnakeGameComponent implements OnInit {
   public gameTheme!: GameThemes;
 
   constructor(
-    private _snakeService: SnakeService,
+    private _authService: AuthenticationService,
     private _router: Router,
-    private _highscores: HighscoresService,
-    private _route: ActivatedRoute
+    private _scores: ScoresClientService,
+    private _route: ActivatedRoute,
+    private _localStorageService: LocalStorageService,
+    private _alertService: AlertService
   ) {
     this._route.params.subscribe(
       (params) => (this.gameTheme = params['game-theme'])
     );
   }
 
-  ngOnInit(): void {
-    this._snakeService.currentPlayer$.subscribe((player: PlayerLogin) => {
-      this.currentPlayer = player;
-    });
-  }
-
   handleThemeChange(): void {
     this._router.navigate(['game', this.gameTheme]);
   }
 
-  renderFormPage() {
-    this._snakeService.updateSubmitState(false);
-    this._snakeService.setPlayerDataOnDefault();
-    this._router.navigate(['/login']);
+  logout() {
+    this._authService.logout().subscribe({
+      next: () => {
+        this._router.navigate(['/login']);
+      },
+      error: () => this._router.navigate(['/login']),
+    });
   }
   changeGameStatus(status: GameAction) {
     this.currentGameStatus = status;
@@ -137,18 +140,31 @@ export class SnakeGameComponent implements OnInit {
     this.sendEvent(
       new SnakeEvent(GameAction.DEAD, this.timer, this.pointsCounter)
     );
-    this._highscores
-      .postScore(
-        this.currentPlayer.username,
-        this.pointsCounter,
-        this.currentPlayer.password
+    this._scores
+      .postScore({
+        username: this.currentPlayerName!,
+        score: this.pointsCounter,
+      })
+      .pipe(
+        catchError((err) => of(err)),
+        switchMap(() => this._scores.getUserScores(this.currentPlayerName!))
       )
-      .subscribe((response) => {
-        console.log(response);
-        this.playerHighScores = response.filter(
-          (score) => score.name === this.currentPlayer.username
-        );
-        this.showAlert();
+      .subscribe({
+        next: (userScores) => {
+          this.playerScores = userScores;
+          this._alertService.pushNewAlert({
+            message: `Score: ${this.pointsCounter} points.`,
+            type: 'window',
+            status: 'info',
+          });
+        },
+        error: () => {
+          this._alertService.pushNewAlert({
+            message: 'Your scores are currently unavailable.',
+            type: 'window',
+            status: 'error',
+          });
+        },
       });
   }
   onFoodEaten() {

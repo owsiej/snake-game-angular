@@ -1,30 +1,23 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-} from '@angular/core';
-import { PlayerRegister } from '../../../models/player-register';
+import { Component } from '@angular/core';
 import {
   AbstractControl,
   AbstractControlOptions,
   FormBuilder,
-  FormGroup,
   ReactiveFormsModule,
   ValidationErrors,
   Validators,
 } from '@angular/forms';
 import moment from 'moment';
-import { GameThemes } from '../../../models/game-themes';
-import { validateToken } from '../../../tokenValidator';
-import { HighscoresService } from '../../../services/highscores.service';
+import { GameThemes } from '../../../const/game-themes';
 import { GameThemeComponent } from '../../base-style/game-theme/game-theme.component';
-import { RouterModule } from '@angular/router';
-import { SnakeService } from '../../../services/snake.service';
-import { RegexPatterns } from '../../../models/regex-patterns';
+import { Router, RouterModule } from '@angular/router';
+import { RegexPatterns } from '../../../const/regex-patterns';
+import { validateUsername } from '../../../validators/usernameValidator';
+import { UserClientService } from '../../../services/users/user-client.service';
+import { AuthenticationService } from '../../../services/auth/authentication.service';
+import { PlayerRegister } from '../../../models/player-register';
+import { AlertService } from '../../../services/alert.service';
 
 @Component({
   selector: 'app-register-form',
@@ -50,8 +43,8 @@ export class RegisterFormComponent {
             Validators.required,
             Validators.pattern(RegexPatterns.LOGIN),
           ],
-          // asyncValidators: [], //tutaj async validator do api
-          // updateOn: 'blur',
+          asyncValidators: [validateUsername(this._userClientService)],
+          updateOn: 'blur',
         },
       ],
       password: [
@@ -85,8 +78,14 @@ export class RegisterFormComponent {
   public setOfMonths: Array<string> = this.generateMonths();
   public setOfDays: Array<number> = this.generateDays();
 
-  constructor(private _fb: FormBuilder, private _snakeService: SnakeService) {
-    this._snakeService.currentGameTheme$.subscribe(
+  constructor(
+    private _fb: FormBuilder,
+    private _authService: AuthenticationService,
+    private _userClientService: UserClientService,
+    private _router: Router,
+    private _alertService: AlertService
+  ) {
+    this._authService.currentGameTheme$.subscribe(
       (theme) => (this.currentGameTheme = theme)
     );
   }
@@ -127,17 +126,36 @@ export class RegisterFormComponent {
   }
 
   onSubmit() {
-    this._snakeService.updateCurrentPlayer({
+    const playerData: PlayerRegister = {
       username: this.username.value!,
       password: this.password.value!,
       dateOfBirth: {
         year: this.year.value!,
-        month: this.month.value!,
+        month: moment().month(this.month.value!).format('MM'),
         day: this.day.value!,
       },
+    };
+    this._authService.register(playerData).subscribe({
+      next: () => {
+        this._authService.updateGameTheme(this.currentGameTheme),
+          this._router.navigate(['/game', this.currentGameTheme]);
+      },
+      error: (e) => {
+        if (e.status === 0) {
+          this._alertService.pushNewAlert({
+            message: 'Server does not respond.',
+            type: 'window',
+            status: 'error',
+          });
+        } else {
+          this._alertService.pushNewAlert({
+            ...e.error,
+            type: 'window',
+            status: 'error',
+          });
+        }
+      },
     });
-    this._snakeService.updateGameTheme(this.currentGameTheme);
-    this._snakeService.updateSubmitState(true);
   }
 
   generateDays(): Array<number> {
@@ -158,7 +176,7 @@ export class RegisterFormComponent {
       {
         length: numberOfDays,
       },
-      (val, idx) => idx + 1
+      (_, idx) => idx + 1
     );
   }
   generateMonths(): Array<string> {

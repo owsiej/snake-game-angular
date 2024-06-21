@@ -1,47 +1,46 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { LoginFormComponent } from './login-form/login-form.component';
-import { SnakeService } from '../../services/snake.service';
-import { Router, RouterOutlet } from '@angular/router';
-import { GameHighscoresComponent } from './game-highscores/game-highscores.component';
-import { HighscoresService } from '../../services/highscores.service';
+import { RouterOutlet } from '@angular/router';
+import { ScoresComponent } from './scores/scores.component';
+import { ScoresClientService } from '../../services/scores/scores-client.service';
 import { Score } from '../../models/score';
 import {
   BehaviorSubject,
   NEVER,
-  Observable,
   Subscription,
   interval,
   switchMap,
 } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { GameThemes } from '../../models/game-themes';
-import { SnakeBackgroundImage } from '../../models/snake-background-image';
+import { GameThemes } from '../../const/game-themes';
+import { SnakeBackgroundImage } from '../../const/snake-background-image';
 import { BackgroundImageComponent } from '../base-style/background-image/background-image.component';
-import { PlayerLogin } from '../../models/player-login';
+import { AlertComponent } from '../alert/alert.component';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-snake-intro-page',
   standalone: true,
   imports: [
     LoginFormComponent,
-    GameHighscoresComponent,
+    ScoresComponent,
     CommonModule,
     FormsModule,
     BackgroundImageComponent,
     RouterOutlet,
+    AlertComponent,
   ],
   templateUrl: './snake-intro-page.component.html',
   styleUrl: './snake-intro-page.component.scss',
 })
 export class SnakeIntroPageComponent implements OnInit, OnDestroy {
-  public globalHighscores: Score[] = [];
+  public scores: Score[] = [];
   public intervalSubscription!: Subscription;
-  public submitSubscription!: Subscription;
   public checkboxState: boolean = false;
   public currentBackgroundImage: SnakeBackgroundImage =
     SnakeBackgroundImage.IMAGE_1;
-
+  public areScoresLoaded: boolean = true;
   public currentGameTheme!: GameThemes;
 
   public bodyTag: HTMLBodyElement = document.getElementsByTagName('body')[0];
@@ -49,29 +48,23 @@ export class SnakeIntroPageComponent implements OnInit, OnDestroy {
   private checkboxStateSubject$ = new BehaviorSubject<boolean>(true);
 
   constructor(
-    private _snakeService: SnakeService,
-    private _router: Router,
-    private _highscores: HighscoresService
+    private _scores: ScoresClientService,
+    private _alertService: AlertService
   ) {
-    this.submitSubscription = this._snakeService.currentSubmitState$.subscribe(
-      (state) => {
-        if (state) {
-          this.onSubmitAction();
-        }
-      }
-    );
     this.handleBackgroundImageChange();
   }
 
   ngOnInit(): void {
-    // this._highscores.loadHighscores().subscribe((scores) => {
-    //   this.globalHighscores = scores;
-    // });
-    // this.loadHighscoresOnInterval();
+    this._scores.getAllScores().subscribe({
+      next: (scores) => {
+        this.scores = scores;
+      },
+      error: () => (this.areScoresLoaded = false),
+    });
+    this.loadScoresOnInterval();
   }
   ngOnDestroy(): void {
-    // this.intervalSubscription.unsubscribe();
-    this.submitSubscription.unsubscribe();
+    this.intervalSubscription.unsubscribe();
   }
 
   handleBackgroundImageChange() {
@@ -81,19 +74,11 @@ export class SnakeIntroPageComponent implements OnInit, OnDestroy {
     );
   }
 
-  onSubmitAction(): void {
-    this._snakeService.currentGameTheme$.subscribe((theme) => {
-      this.currentGameTheme = theme;
-    });
-
-    this._router.navigate(['/game', this.currentGameTheme]);
-  }
-
   handleCheckBoxState() {
     this.checkboxStateSubject$.next(!this.checkboxStateSubject$.getValue());
   }
 
-  loadHighscoresOnInterval(): void {
+  loadScoresOnInterval(): void {
     this.intervalSubscription = this.checkboxStateSubject$
       .pipe(
         switchMap((value) => {
@@ -103,10 +88,10 @@ export class SnakeIntroPageComponent implements OnInit, OnDestroy {
             return NEVER;
           }
         }),
-        switchMap(() => this._highscores.loadHighscores())
+        switchMap(() => this._scores.getAllScores())
       )
       .subscribe((scores) => {
-        this.globalHighscores = scores;
+        this.scores = scores;
       });
   }
 }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { SnakeBackgroundImage } from '../../../models/snake-background-image';
+import { SnakeBackgroundImage } from '../../../const/snake-background-image';
 import { BaseStyleComponent } from '../base-style.component';
 import { StyleOptions } from '../../../models/style-options';
 

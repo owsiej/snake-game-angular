@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { GameThemes } from '../../../models/game-themes';
+import { GameThemes } from '../../../const/game-themes';
 import { StyleOptions } from '../../../models/style-options';
 import { BaseStyleComponent } from '../base-style.component';
 

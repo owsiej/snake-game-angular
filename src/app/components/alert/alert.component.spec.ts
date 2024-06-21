@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EndGameAlertComponent } from './end-game-alert.component';
+import { EndGameAlertComponent } from './alert.component';
 
 describe('EndGameAlertComponent', () => {
   let component: EndGameAlertComponent;
@@ -8,10 +8,9 @@ describe('EndGameAlertComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EndGameAlertComponent]
-    })
-    .compileComponents();
-    
+      imports: [EndGameAlertComponent],
+    }).compileComponents();
+
     fixture = TestBed.createComponent(EndGameAlertComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();

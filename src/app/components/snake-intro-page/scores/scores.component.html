@@ -11,8 +11,9 @@
     </div>
 
 </div>
+<p *ngIf="!areScoresLoaded">Scores are currently unavailable.</p>
 <ul class="my-text fs-5">
     <li
-        *ngFor="let score of highscores | sort:sortOrder | slice:0:10">Name:
-        {{score.name}} Score: {{score.score}}</li>
+        *ngFor="let score of scores | sort:sortOrder | slice:0:10">Name:
+        {{score.username}} Score: {{score.score}}</li>
 </ul>

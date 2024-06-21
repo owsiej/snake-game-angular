@@ -1,8 +1,4 @@
 export interface Score {
-  name: string;
+  username: string;
   score: number;
-}
-
-export interface TokenValidation {
-  success: boolean;
 }

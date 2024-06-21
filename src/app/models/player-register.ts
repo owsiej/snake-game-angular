@@ -1,6 +1,6 @@
 export interface PlayerRegister {
   username: string;
-  password: string;
+  password?: string;
   dateOfBirth: {
     year: number;
     month: string;
