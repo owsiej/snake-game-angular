@@ -9,6 +9,7 @@ import { LoginFormComponent } from './components/snake-intro-page/login-form/log
 import { jwtInterceptor } from './interceptors/jwt.interceptor';
 import { logoutInterceptor } from './interceptors/logout.interceptor';
 import { MainPageGuard } from './guards/main-page.guard';
+import { refreshTokenInterceptor } from './interceptors/refresh-token.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -39,6 +40,12 @@ export const appConfig: ApplicationConfig = {
         redirectTo: 'login',
       },
     ]),
-    provideHttpClient(withInterceptors([jwtInterceptor, logoutInterceptor])),
+    provideHttpClient(
+      withInterceptors([
+        jwtInterceptor,
+        refreshTokenInterceptor,
+        logoutInterceptor,
+      ])
+    ),
   ],
 };

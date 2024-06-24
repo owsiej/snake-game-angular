@@ -49,7 +49,7 @@ Game was one of the task on postgraduate studies I finished. I pushed this proje
 - 2 guards, one blocks entry to game page when you aren't logged and second one redirects from login page to game page, if you are logged in
 - game background has got three different themes
 - when the game is over, your score will be sent to backend and your personal highscores will be displayed
-- refresh token feature still to be delivered
+- if your access token runs out (causing a 401 error and hasTokenExpired flag), the refresh token interceptor will silently get you new tokens.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

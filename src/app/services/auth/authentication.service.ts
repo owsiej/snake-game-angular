@@ -6,6 +6,7 @@ import { PlayerRegister } from '../../models/player-register';
 import { PlayerLogin } from '../../models/player-login';
 import { LocalStorageService } from '../local-storage.service';
 import { JwtTokens } from '../../models/jwt-tokens';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +24,8 @@ export class AuthenticationService {
 
   constructor(
     private _authClientService: AuthenticationClientService,
-    private _localStorageService: LocalStorageService
+    private _localStorageService: LocalStorageService,
+    private _router: Router
   ) {}
 
   public isUserLogged(): boolean {
@@ -61,5 +63,20 @@ export class AuthenticationService {
     return this._authClientService
       .logout()
       .pipe(tap(() => this._localStorageService.deleteTokens()));
+  }
+
+  public logoutUserWithInvalidTokens() {
+    this._localStorageService.deleteTokens();
+    this._router.navigateByUrl('/login');
+  }
+
+  public refreshTokens() {
+    return this._authClientService.refreshTokens().pipe(
+      map((resTokens) => {
+        this._localStorageService.tokens = resTokens;
+
+        return resTokens;
+      })
+    );
   }
 }

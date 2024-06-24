@@ -1,7 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
 import { NgxSnakeComponent, NgxSnakeModule } from 'ngx-snake';
-import { catchError, interval, of, switchMap, takeWhile } from 'rxjs';
+import {
+  catchError,
+  interval,
+  of,
+  switchMap,
+  takeWhile,
+  throwError,
+} from 'rxjs';
 import { SnakeEventsComponent } from './snake-events/snake-events.component';
 import { SnakeEvent } from '../../models/snake-event';
 import { GameAction } from '../../const/game-action';
@@ -70,12 +77,9 @@ export class SnakeGameComponent {
   }
 
   logout() {
-    this._authService.logout().subscribe({
-      next: () => {
-        this._router.navigate(['/login']);
-      },
-      error: () => this._router.navigate(['/login']),
-    });
+    this._authService
+      .logout()
+      .subscribe(() => this._router.navigate(['/login']));
   }
   changeGameStatus(status: GameAction) {
     this.currentGameStatus = status;

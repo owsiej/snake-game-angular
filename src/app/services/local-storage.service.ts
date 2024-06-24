@@ -28,6 +28,12 @@ export class LocalStorageService {
     return this.user?.tokens;
   }
 
+  set tokens(tokens: JwtTokens) {
+    const user = this.user!;
+    user.tokens = tokens;
+    this.user = user;
+  }
+
   get access_token(): string | undefined {
     return (this.tokens as JwtTokens)?.access_token;
   }

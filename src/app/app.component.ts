@@ -9,16 +9,3 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.scss',
 })
 export class AppComponent {}
-
-/*
-
-
-
-
-TODO
-
-- dorzucic footer do app component
-  * footer z linkami do repo kody
-
-interceptor z refresh token po polu hastokenexpired
-*/
