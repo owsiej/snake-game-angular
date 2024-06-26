@@ -6,8 +6,8 @@
 <h3 align="center">Snake game</h3>
 
   <p align="center">
-    One of the most popular browser/mobile games written in Angular.
-
+    One of the most popular browser/mobile games written in Angular.<br>
+<b>🚀DEPLOYED ON</b>: https://snake-game-project-e8b0d.web.app
 </div>
 
 <!-- TABLE OF CONTENTS -->
